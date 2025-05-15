@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Position Size & Leverage Calculator</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; max-width: 400px; }
+  label { display: block; margin-top: 15px; }
+  input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
+  #results { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h2>Position Size & Leverage Calculator</h2>
+
+<label for="tradeType">Trade Type:</label>
+<select id="tradeType">
+  <option value="long">Long</option>
+  <option value="short">Short</option>
+</select>
+
+<label for="entryPrice">Entry Price (e.g. BTC price in USD):</label>
+<input type="number" id="entryPrice" step="0.01" />
+
+<label for="stopLossPrice">Stop Loss Price:</label>
+<input type="number" id="stopLossPrice" step="0.01" />
+
+<label for="takeProfitPrice">Take Profit Price:</label>
+<input type="number" id="takeProfitPrice" step="0.01" />
+
+<label for="riskAmount">Risk Amount ($) - How much you want to risk if stop hits:</label>
+<input type="number" id="riskAmount" step="0.01" />
+
+<label for="marginAmount">Margin ($) - Your real money put up as collateral:</label>
+<input type="number" id="marginAmount" step="0.01" />
+
+<button onclick="calculate()">Calculate</button>
+
+<div id="results"></div>
+
+<script>
+function calculate() {
+  const tradeType = document.getElementById('tradeType').value;
+  const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+  const stopLossPrice = parseFloat(document.getElementById('stopLossPrice').value);
+  const takeProfitPrice = parseFloat(document.getElementById('takeProfitPrice').value);
+  const riskAmount = parseFloat(document.getElementById('riskAmount').value);
+  const marginAmount = parseFloat(document.getElementById('marginAmount').value);
+
+  if (isNaN(entryPrice) || isNaN(stopLossPrice) || isNaN(takeProfitPrice) || isNaN(riskAmount) || isNaN(marginAmount)) {
+    alert('Please fill in all fields with valid numbers.');
+    return;
+  }
+
+  let stopLossDistance;
+  let takeProfitDistance;
+
+  if (tradeType === 'long') {
+    stopLossDistance = entryPrice - stopLossPrice;
+    takeProfitDistance = entryPrice - takeProfitPrice;
+  } else {
+    // short
+    stopLossDistance = stopLossPrice - entryPrice;
+    takeProfitDistance = takeProfitPrice - entryPrice;
+  }
+
+  if (stopLossDistance <= 0) {
+    alert('Stop Loss price must be on the correct side of the Entry price based on trade type.');
+    return;
+  }
+
+  // Position size = Risk amount / stop loss distance
+  const positionSize = riskAmount / stopLossDistance;
+
+  // Position value controlled
+  const positionValue = positionSize * entryPrice;
+
+  // Leverage required = position value / margin
+  const leverage = positionValue / marginAmount;
+
+  // Potential profit at take profit price
+  const potentialProfit = positionSize * Math.abs(takeProfitDistance);
+
+  const stopLossPercent = (stopLossDistance / entryPrice) * 100;
+
+  document.getElementById('results').innerHTML = `
+    <strong>Results:</strong><br>
+    Stop Loss % distance: ${stopLossPercent.toFixed(4)}%<br>
+    Position Size (units): ${positionSize.toFixed(6)}<br>
+    Position Value Controlled (with leverage): $${positionValue.toFixed(2)}<br>
+    Required Leverage: ${leverage.toFixed(2)}x<br>
+    Potential Profit at Take Profit: $${potentialProfit.toFixed(2)}
+  `;
+}
+</script>
+
+</body>
+</html>
