@@ -1,0 +1,1 @@
+page to calculate leverage needed if you see a trade. Know entry price, SL, TP, what you're willing to lose (if stop loss hits) and margin used. It will tell you what your leverage needs to be set at. 
