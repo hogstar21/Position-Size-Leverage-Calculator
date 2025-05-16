@@ -1,86 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Position Size & Leverage Calculator</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
-  label { display: block; margin-top: 15px; }
-  input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
-  #results { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
-  .entry-point { 
-    background: #f9f9f9; 
-    padding: 10px; 
-    margin-bottom: 10px; 
-    border-radius: 5px; 
-    position: relative;
-  }
-  .remove-entry {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ff5555;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-  .entry-container {
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  .action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .action-buttons button {
-    flex: 1;
-  }
-  #addEntryBtn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  #calculateBtn {
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  .entry-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  .units-column {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .units-column input {
-    flex: 1;
-  }
-  .units-column label {
-    margin-top: 0;
-    white-space: nowrap;
-  }
-  .total-percentage {
-    margin-top: 10px;
-    text-align: right;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Position Size & Leverage Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; }
+    label { display: block; margin-top: 15px; }
+    input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
+    #results { margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 5px; }
+    .entry-point {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      position: relative;
+    }
+    .remove-entry {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff5555;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .entry-container {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .action-buttons button {
+      flex: 1;
+    }
+    #addEntryBtn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #calculateBtn {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .entry-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .units-column {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .units-column input {
+      flex: 1;
+    }
+    .units-column label {
+      margin-top: 0;
+      white-space: nowrap;
+    }
+    .total-percentage {
+      margin-top: 10px;
+      text-align: right;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 <h2>Position Size & Leverage Calculator</h2>
@@ -93,12 +93,8 @@
 
 <div class="entry-container">
   <h3>Entry Points</h3>
-  <div id="entryPoints">
-    <!-- Entry points will be added here -->
-  </div>
-  
+  <div id="entryPoints"></div>
   <div class="total-percentage">Total: <span id="totalPercentage">0</span>%</div>
-  
   <div class="action-buttons">
     <button id="addEntryBtn" onclick="addEntryPoint()">Add Entry Point</button>
   </div>
@@ -110,10 +106,13 @@
 <label for="takeProfitPrice">Take Profit Price:</label>
 <input type="number" id="takeProfitPrice" step="0.01" />
 
-<label for="riskAmount">Risk Amount ($) - How much you want to risk if stop hits:</label>
+<label for="targetProfit">Target Profit ($) - Optional:</label>
+<input type="number" id="targetProfit" step="0.01" />
+
+<label for="riskAmount">Risk Amount ($) - Leave blank if using Target Profit:</label>
 <input type="number" id="riskAmount" step="0.01" />
 
-<label for="marginAmount">Margin ($) - Your real money put up as collateral:</label>
+<label for="marginAmount">Margin ($):</label>
 <input type="number" id="marginAmount" step="0.01" />
 
 <button id="calculateBtn" onclick="calculate()">Calculate</button>
@@ -123,8 +122,7 @@
 <script>
 let entryPointCounter = 0;
 
-// Add initial entry point when page loads
-window.onload = function() {
+window.onload = function () {
   addEntryPoint();
   updateTotalPercentage();
 };
@@ -134,17 +132,16 @@ function addEntryPoint() {
   const entryPointDiv = document.createElement('div');
   entryPointDiv.className = 'entry-point';
   entryPointDiv.dataset.id = entryPointCounter;
-  
-  // Default values: First entry 100%, subsequent entries 0%
+
   const defaultPercentage = entryPointCounter === 1 ? '100' : '0';
-  
+
   entryPointDiv.innerHTML = `
     <div class="entry-label">Entry Point #${entryPointCounter}</div>
     <button class="remove-entry" onclick="removeEntryPoint(${entryPointCounter})">×</button>
-    
+
     <label for="entryPrice_${entryPointCounter}">Entry Price:</label>
     <input type="number" id="entryPrice_${entryPointCounter}" step="0.01" />
-    
+
     <div class="units-column">
       <div style="flex: 1;">
         <label for="percentage_${entryPointCounter}">Percentage of Total Position (%):</label>
@@ -152,210 +149,120 @@ function addEntryPoint() {
       </div>
     </div>
   `;
-  
-  document.getElementById('entryPoints').appendChild(entryPointDiv);
-  
-  // If it's the first entry point, force to 100%
-  if (entryPointCounter === 1) {
-    updatePercentages();
-  }
-  
-  updateTotalPercentage();
-}
 
-function updateTotalPercentage() {
-  const entryPoints = document.querySelectorAll('.entry-point');
-  let total = 0;
-  
-  entryPoints.forEach(entry => {
-    const percentageInput = entry.querySelector('input[id^="percentage_"]');
-    total += parseFloat(percentageInput.value) || 0;
-  });
-  
-  document.getElementById('totalPercentage').textContent = total.toFixed(2);
-  
-  // Change color based on whether it equals 100%
-  if (Math.abs(total - 100) < 0.01) {
-    document.getElementById('totalPercentage').style.color = 'green';
-  } else {
-    document.getElementById('totalPercentage').style.color = 'red';
-  }
+  document.getElementById('entryPoints').appendChild(entryPointDiv);
+  updateTotalPercentage();
 }
 
 function removeEntryPoint(id) {
   const entryPoints = document.getElementById('entryPoints');
   const entryToRemove = document.querySelector(`.entry-point[data-id="${id}"]`);
-  
-  // Don't allow removing the last entry point
   if (entryPoints.children.length <= 1) {
     alert("You must have at least one entry point.");
     return;
   }
-  
   entryPoints.removeChild(entryToRemove);
-  
-  // Renumber the remaining entry points
   renumberEntryPoints();
-  
-  // Update total percentage display
   updateTotalPercentage();
-  
-  // Update percentages after removal
-  updatePercentages();
 }
 
 function renumberEntryPoints() {
   const entryPoints = document.querySelectorAll('.entry-point');
-  
   entryPoints.forEach((entry, index) => {
     const number = index + 1;
-    // Update entry label
     const entryLabel = entry.querySelector('.entry-label');
     entryLabel.textContent = `Entry Point #${number}`;
-    
-    // We don't need to update the data-id attribute since it's only used for removal
   });
 }
 
-function updatePercentages() {
+function updateTotalPercentage() {
   const entryPoints = document.querySelectorAll('.entry-point');
-  
-  // If there's only one entry point, set it to 100%
-  if (entryPoints.length === 1) {
-    const percentageInput = entryPoints[0].querySelector('input[id^="percentage_"]');
-    percentageInput.value = 100;
-    return;
-  }
-  
-  // For multiple entry points, we don't force normalization
-  // This allows users to freely adjust percentages
+  let total = 0;
+  entryPoints.forEach(entry => {
+    const percentageInput = entry.querySelector('input[id^="percentage_"]');
+    total += parseFloat(percentageInput.value) || 0;
+  });
+  const totalElem = document.getElementById('totalPercentage');
+  totalElem.textContent = total.toFixed(2);
+  totalElem.style.color = Math.abs(total - 100) < 0.01 ? 'green' : 'red';
 }
 
 function calculate() {
   const tradeType = document.getElementById('tradeType').value;
-  const stopLossPrice = parseFloat(document.getElementById('stopLossPrice').value);
-  const takeProfitPrice = parseFloat(document.getElementById('takeProfitPrice').value);
-  const riskAmount = parseFloat(document.getElementById('riskAmount').value);
-  const marginAmount = parseFloat(document.getElementById('marginAmount').value);
-  
-  // Validate main inputs
-  if (isNaN(stopLossPrice) || isNaN(takeProfitPrice) || isNaN(riskAmount) || isNaN(marginAmount)) {
-    alert('Please fill in all fields with valid numbers.');
+  const stopLoss = parseFloat(document.getElementById('stopLossPrice').value);
+  const takeProfit = parseFloat(document.getElementById('takeProfitPrice').value);
+  const targetProfit = parseFloat(document.getElementById('targetProfit').value);
+  const riskInput = parseFloat(document.getElementById('riskAmount').value);
+  const margin = parseFloat(document.getElementById('marginAmount').value);
+
+  if (isNaN(stopLoss) || isNaN(takeProfit) || isNaN(margin)) {
+    alert('Please fill in Stop Loss, Take Profit, and Margin fields.');
     return;
   }
-  
-  // Get all entry points
-  const entryPointElements = document.querySelectorAll('.entry-point');
-  const entryPoints = [];
-  
-  // Validate and collect entry points
-  for (const element of entryPointElements) {
-    const id = element.dataset.id;
-    const entryPrice = parseFloat(document.getElementById(`entryPrice_${id}`).value);
-    const percentage = parseFloat(document.getElementById(`percentage_${id}`).value);
-    
-    if (isNaN(entryPrice) || isNaN(percentage)) {
-      alert('Please fill in all entry point fields with valid numbers.');
-      return;
-    }
-    
-    entryPoints.push({
-      id,
-      entryPrice,
-      percentage: percentage / 100  // Convert to decimal
-    });
-  }
-  
-  // Calculate weighted average entry price
-  let totalWeight = 0;
-  let weightedSum = 0;
-  
-  for (const point of entryPoints) {
-    weightedSum += point.entryPrice * point.percentage;
-    totalWeight += point.percentage;
-  }
-  
-  // Check if percentages sum to 100%
-  if (Math.abs(totalWeight - 1) > 0.02) { // Allow small error due to rounding
-    alert(`Your entry point percentages sum to ${(totalWeight * 100).toFixed(1)}%. They should sum to 100%.`);
+
+  const entries = [];
+  let avgEntry = 0, totalPct = 0;
+
+  document.querySelectorAll('.entry-point').forEach(entry => {
+    const id = entry.dataset.id;
+    const price = parseFloat(document.getElementById(`entryPrice_${id}`).value);
+    const pct = parseFloat(document.getElementById(`percentage_${id}`).value);
+    if (isNaN(price) || isNaN(pct)) return;
+    entries.push({ price, pct });
+    avgEntry += price * (pct / 100);
+    totalPct += pct;
+  });
+
+  if (Math.abs(totalPct - 100) > 1) {
+    alert("Total percentage must equal 100%.");
     return;
   }
-  
-  const averageEntryPrice = weightedSum / totalWeight;
-  
-  // Calculate based on trade type
-  let stopLossDistance;
-  let takeProfitDistance;
-  
+
+  let stopDist, takeDist;
   if (tradeType === 'long') {
-    stopLossDistance = averageEntryPrice - stopLossPrice;
-    takeProfitDistance = takeProfitPrice - averageEntryPrice;
+    stopDist = avgEntry - stopLoss;
+    takeDist = takeProfit - avgEntry;
   } else {
-    // short
-    stopLossDistance = stopLossPrice - averageEntryPrice;
-    takeProfitDistance = averageEntryPrice - takeProfitPrice;
+    stopDist = stopLoss - avgEntry;
+    takeDist = avgEntry - takeProfit;
   }
-  
-  if (stopLossDistance <= 0) {
-    alert('Stop Loss price must be on the correct side of the Entry price based on trade type.');
+
+  if (stopDist <= 0 || takeDist <= 0) {
+    alert("Stop Loss and Take Profit must be on the correct side of Entry for this trade type.");
     return;
   }
-  
-  // Position size calculations
-  const positionSize = riskAmount / stopLossDistance;
-  
-  // Calculate individual position sizes based on percentages
-  const positionSizes = entryPoints.map(point => ({
-    ...point,
-    individualPositionSize: positionSize * point.percentage
-  }));
-  
-  // Position value controlled
-  const positionValue = positionSize * averageEntryPrice;
-  
-  // Leverage required = position value / margin
-  const leverage = positionValue / marginAmount;
-  
-  // Potential profit at take profit price
-  const potentialProfit = positionSize * takeProfitDistance;
-  
-  // Risk to reward ratio
-  const riskRewardRatio = takeProfitDistance / stopLossDistance;
-  
-  // Stop loss percentage
-  const stopLossPercent = (stopLossDistance / averageEntryPrice) * 100;
-  
-  // Take profit percentage
-  const takeProfitPercent = (takeProfitDistance / averageEntryPrice) * 100;
-  
-  // Generate results HTML
-  let resultsHTML = `
-    <strong>Overall Results:</strong><br>
-    Average Entry Price: ${averageEntryPrice.toFixed(2)}<br>
-    Stop Loss % distance: ${stopLossPercent.toFixed(2)}%<br>
-    Take Profit % target: ${takeProfitPercent.toFixed(2)}%<br>
-    Risk/Reward Ratio: 1:${riskRewardRatio.toFixed(2)}<br>
-    Total Position Size: ${positionSize.toFixed(6)} units<br>
-    Position Value Controlled: ${positionValue.toFixed(2)}<br>
-    Required Leverage: ${leverage.toFixed(2)}x<br>
-    Potential Profit at Take Profit: ${potentialProfit.toFixed(2)}<br><br>
-    <strong>Individual Entry Points:</strong><br>
-  `;
-  
-  // Add individual entry point details
-  for (let i = 0; i < positionSizes.length; i++) {
-    const point = positionSizes[i];
-    const displayNumber = i + 1; // Display sequential numbers regardless of ID
-    const individualValue = point.individualPositionSize * point.entryPrice;
-    resultsHTML += `
-      Entry #${displayNumber} (${point.entryPrice.toFixed(2)}): 
-      ${(point.percentage * 100).toFixed(2)}% of position, 
-      ${point.individualPositionSize.toFixed(6)} units, 
-      Value: ${individualValue.toFixed(2)}<br>
-    `;
+
+  let positionSize, riskAmount;
+  if (!isNaN(targetProfit)) {
+    positionSize = targetProfit / takeDist;
+    riskAmount = stopDist * positionSize;
+  } else if (!isNaN(riskInput)) {
+    positionSize = riskInput / stopDist;
+    riskAmount = riskInput;
+  } else {
+    alert("Enter either Target Profit or Risk Amount.");
+    return;
   }
-  
-  document.getElementById('results').innerHTML = resultsHTML;
+
+  const positionValue = positionSize * avgEntry;
+  const leverage = positionValue / margin;
+  const rrr = takeDist / stopDist;
+  const stopPct = (stopDist / avgEntry) * 100;
+  const takePct = (takeDist / avgEntry) * 100;
+
+  let html = `
+    <strong>Results</strong><br>
+    Avg Entry: ${avgEntry.toFixed(2)}<br>
+    Position Size: ${positionSize.toFixed(4)} units<br>
+    Risk Amount: $${riskAmount.toFixed(2)}<br>
+    Take Profit Potential: $${(positionSize * takeDist).toFixed(2)}<br>
+    Stop Loss %: ${stopPct.toFixed(2)}%<br>
+    Take Profit %: ${takePct.toFixed(2)}%<br>
+    Risk/Reward: 1:${rrr.toFixed(2)}<br>
+    Leverage: ${leverage.toFixed(2)}x
+  `;
+
+  document.getElementById("results").innerHTML = html;
 }
 </script>
 </body>
